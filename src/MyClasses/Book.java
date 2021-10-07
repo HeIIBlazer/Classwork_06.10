@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Book {
     private String NameBook;
     private int PublishedYear;
-    private Author [] author;
+    private Author[] author;
 
     public String getNameBook() {
         return NameBook;
@@ -37,5 +37,8 @@ public class Book {
                 + ", PublishedYear=" + PublishedYear 
                 + ", author=" + Arrays.toString(author) + '}';
     }
+
+
+    }
     
-}
+
