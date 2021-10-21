@@ -1,20 +1,28 @@
 package jptv20library;
 
-import MyClasses.Author;
-import MyClasses.Book;
-import MyClasses.History;
-import MyClasses.Reader;
+import Entity.Author;
+import Entity.Book;
+import Entity.History;
+import Entity.Reader;
+import Interfaces.Keeping;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
+import tools.SaveToFile;
 
 
 public class App {
- private Scanner scanner = new Scanner(System.in);
- private Book[] books = new Book[10];
- private Reader[] readers= new Reader[10];
- private History[] historys= new History[10];
-    public void run() {
+    private Scanner scanner = new Scanner(System.in);
+    private Book[] books = new Book[10];
+    private Reader[] readers= new Reader[10];
+    private History[] historys= new History[10];
+    private Keeping keeper= new SaveToFile();
+public App() {
+    books =keeper.loadBooks();
+
+
+}
+ public void run() {
      String repeat ="r";
         do{
             System.out.println("0: Выход из программы");
@@ -39,6 +47,7 @@ public class App {
                     for (int i = 0; i < books.length; i++) {
                         if(books[i]==null){
                         books[i]= addBook();
+                        keeper.saveBooks(books);
                         break;
                         }
                     }

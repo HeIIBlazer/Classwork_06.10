@@ -1,8 +1,9 @@
-    package MyClasses;
+    package Entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-    public class History {
+    public class History implements Serializable{
     private Reader reader;
     private Book book;
     private Date givendate;

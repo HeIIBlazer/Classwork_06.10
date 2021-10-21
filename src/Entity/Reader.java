@@ -1,5 +1,8 @@
-package MyClasses;
-public class Reader {
+package Entity;
+
+import java.io.Serializable;
+
+public class Reader implements Serializable {
    private String FirstName;
    private String LastName;
    private String Phone;
