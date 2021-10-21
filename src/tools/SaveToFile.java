@@ -55,22 +55,77 @@ public class SaveToFile implements Keeping{
 
     @Override
     public void saveReaders(Reader[] readers) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FileOutputStream fos=null;
+        ObjectOutputStream oos = null;
+        try{
+            fos=new FileOutputStream("readers");
+            oos=new ObjectOutputStream(fos);
+            oos.writeObject(readers);
+            oos.flush();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.INFO, "Нет файла readers", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, "Ошибка ввода данных", ex);
+        }
     }
 
     @Override
     public Reader[] loadreaders() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Reader[] readers= new Reader[10];
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try{
+            fis = new FileInputStream("readers");
+            ois= new ObjectInputStream(fis);
+            readers = (Reader[]) ois.readObject();
+        
+        
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.INFO, "Файл readers еще не создан", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, "ошибка читавания файла readers", ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.INFO, "Класса Reader не существует", ex);
+        }
+        return readers;
     }
 
     @Override
     public void saveHistories(History[] histories) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FileOutputStream fos=null;
+        ObjectOutputStream oos = null;
+        try{
+            fos=new FileOutputStream("histories");
+            oos=new ObjectOutputStream(fos);
+            oos.writeObject(histories);
+            oos.flush();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.INFO, "Нет файла histories", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, "Ошибка ввода данных", ex);
+        }
     }
 
     @Override
     public History[] loadHistories() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        History[] histories= new History[10];
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try{
+            fis = new FileInputStream("histories");
+            ois= new ObjectInputStream(fis);
+            histories= (History[]) ois.readObject();
+        
+        
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.INFO, "Файл histories еще не создан", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, "ошибка читавания файла histories", ex);
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.INFO, "Класса History не найдено", ex);
+        }
+        return histories;
     }
     
 }
