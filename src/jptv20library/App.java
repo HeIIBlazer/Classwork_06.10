@@ -5,17 +5,19 @@ import Entity.Book;
 import Entity.History;
 import Entity.Reader;
 import Interfaces.Keeping;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Scanner;
 import tools.SaveToFile;
 
 
 public class App {
     private Scanner scanner = new Scanner(System.in);
-    private Book[] books = new Book[10];
-    private Reader[] readers= new Reader[10];
-    private History[] histories= new History[10];
+    private List<Book> books = new ArrayList<>();
+    private List<Reader> readers= new ArrayList<>();
+    private List<History> histories= new ArrayList<>();
     private Keeping keeper= new SaveToFile();
 public App() {
     books =keeper.loadBooks();
@@ -46,9 +48,9 @@ public App() {
                     break;
                 case 1:
                     System.out.println("--------Добавляем книгу----------");
-                    for (int i = 0; i < books.length; i++) {
-                        if(books[i]==null){
-                        books[i]= addBook();
+                    for (int i = 0; i < books.size(); i++) {
+                        if(books.get(i)==null){
+                        books.add(addBook());
                         keeper.saveBooks(books);
                         break;
                         }
@@ -57,9 +59,9 @@ public App() {
                     
                 case 2:
                     System.out.println("-------------Список книг-------------");
-                    for (int i = 0; i < books.length; i++) {
-                        if(books[i]!=null){
-                            System.out.println(books[i].toString());
+                    for (int i = 0; i < books.size(); i++) {
+                        if(books.get(i)!=null){
+                            System.out.println(books.get(i).toString());
                                 
                             }
                         
@@ -67,9 +69,9 @@ public App() {
                 break;
                 case 3:
                     System.out.println("-------------Добавить читателя----------------");
-                    for (int i = 0; i < readers.length; i++) {
-                        if(readers[i]==null){
-                        readers[i]=addReader();
+                    for (int i = 0; i < readers.size(); i++) {
+                        if(readers.get(i)==null){
+                        readers.add(addReader());
                         keeper.saveReaders(readers);
                         break;
                                     }
@@ -77,9 +79,9 @@ public App() {
                 break;
                 case 4:
                     System.out.println("-------------Cписок читателей-------------");
-                    for (int i = 0; i < readers.length; i++) {
-                        if(readers[i]!=null){
-                            System.out.println(readers[i].toString());
+                    for (int i = 0; i < readers.size(); i++) {
+                        if(readers.get(i)!=null){
+                            System.out.println(readers.get(i).toString());
                                 
                             }
                         
@@ -88,9 +90,9 @@ public App() {
                 break;
                 case 5:
                     System.out.println("-------------Видать книгу-------------"); 
-                     for (int i = 0; i < histories.length; i++) {
-                        if(histories[i]==null){
-                        histories[i]=addHistories();
+                     for (int i = 0; i < histories.size(); i++) {
+                        if(histories.get(i)==null){
+                        histories.add(addHistories());
                         keeper.saveHistories(histories);
                         break;
                                     }
@@ -100,10 +102,10 @@ public App() {
                 case 6:
                     System.out.println("-------------Список выданных книг-------------"); 
                     int n=0;
-                    for (int i = 0; i < histories.length; i++) {
-                        if(histories[i]!=null && histories[i].getReturndate()== null){
-                            System.out.println(histories[i].toString());
-                            System.out.println("Книгу "+histories[i].getBook().getNameBook()+" читает "+histories[i].getReader().getFirstName()+" "+histories[i].getReader().getLastName());
+                    for (int i = 0; i < histories.size(); i++) {
+                        if(histories.get(i)!=null && histories.get(i).getReturndate()== null){
+                            System.out.println(histories.get(i).toString());
+                            System.out.println("Книгу "+histories.get(i).getBook().getNameBook()+" читает "+histories.get(i).getReader().getFirstName()+" "+histories.get(i).getReader().getLastName());
                             n++;
                         }
                     }
@@ -120,8 +122,8 @@ public App() {
                     System.out.println("Номер возвращаемой книги");
                     int numberHistory =scanner.nextInt();scanner.nextLine();
                     Calendar c= new GregorianCalendar();
-                    histories[numberHistory -1].setReturndate(c.getTime());
-                    System.out.println("Книга "+histories[numberHistory-1].getBook().getNameBook()+" возвращена "+histories[numberHistory-1].getReader().getFirstName()+" "+histories[numberHistory-1].getReader().getLastName());
+                    histories.get(numberHistory -1).setReturndate(c.getTime());
+                    System.out.println("Книга "+histories.get(numberHistory-1).getBook().getNameBook()+" возвращена "+histories.get(numberHistory-1).getReader().getFirstName()+" "+histories.get(numberHistory-1).getReader().getLastName());
                     break;
                     
                 default:
@@ -130,9 +132,9 @@ public App() {
      }while("r".equals(repeat));   
         }
     private void printGivenBooks(){
-        for (int i = 0; i < histories.length; i++) {
-            if(histories[i]!=null && histories[i].getReturndate()== null){
-                System.out.println(i+1+": Книгу "+histories[i].getBook().getNameBook()+" читает "+histories[i].getReader().getFirstName()+" "+histories[i].getReader().getLastName());
+        for (int i = 0; i < histories.size(); i++) {
+            if(histories.get(i)!=null && histories.get(i).getReturndate()== null){
+                System.out.println(i+1+": Книгу "+histories.get(i).getBook().getNameBook()+" читает "+histories.get(i).getReader().getFirstName()+" "+histories.get(i).getReader().getLastName());
                         }
         }
     }
@@ -181,28 +183,29 @@ public App() {
     private History addHistories(){
         History history = new History();
         System.out.println("Список книг");
-        for (int i = 0; i < books.length; i++) {
-         if(books[i]!=null){
-             System.out.println(i+1+": "+books[i].toString());
+        for (int i = 0; i < books.size(); i++) {
+         if(books.get(i)!=null){
+             System.out.println(i+1+": "+books.get(i).toString());
          }
         }
         System.out.print("Введите номер книги: ");
         int numberBook =scanner.nextInt();scanner.nextLine();
         
-        for (int i = 0; i < readers.length; i++) {
-            if(readers[i]!=null){
-               System.out.println(i+1+": "+readers[i].toString());    
+        for (int i = 0; i < readers.size(); i++) {
+            if(readers.get(i)!=null){
+               System.out.println(i+1+": "+readers.get(i).toString());    
             }
                     }
         System.out.print("Введите номер читателя: ");
         int numberReader =scanner.nextInt();scanner.nextLine();
-        history.setBook(books[numberBook-1]);
-        history.setReader(readers[numberReader-1]);
+        history.setBook(books.get(numberBook-1));
+        history.setReader(readers.get(numberReader-1));
         Calendar c= new GregorianCalendar();
         history.setGivendate(c.getTime());
         return history;
     }
 
+    
     
     
 }
