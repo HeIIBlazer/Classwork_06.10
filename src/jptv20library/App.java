@@ -29,6 +29,7 @@ public App() {
  public void run() {
      String repeat ="r";
         do{
+            System.out.println(" ");
             System.out.println("0: Выход из программы");
             System.out.println("1: Ввод Информация об книге и авторе");
             System.out.println("2: Информация о книгах");
@@ -48,35 +49,20 @@ public App() {
                     break;
                 case 1:
                     System.out.println("--------Добавляем книгу----------");
-                    for (int i = 0; i < books.size(); i++) {
-                        if(books.get(i)==null){
+
                         books.add(addBook());
                         keeper.saveBooks(books);
                         break;
-                        }
-                    }
-                    break;
                     
                 case 2:
                     System.out.println("-------------Список книг-------------");
-                    for (int i = 0; i < books.size(); i++) {
-                        if(books.get(i)!=null){
-                            System.out.println(books.get(i).toString());
-                                
-                            }
-                        
-                    }
-                break;
+                    printBooks();
+                    break;
                 case 3:
                     System.out.println("-------------Добавить читателя----------------");
-                    for (int i = 0; i < readers.size(); i++) {
-                        if(readers.get(i)==null){
                         readers.add(addReader());
                         keeper.saveReaders(readers);
                         break;
-                                    }
-                    }
-                break;
                 case 4:
                     System.out.println("-------------Cписок читателей-------------");
                     for (int i = 0; i < readers.size(); i++) {
@@ -90,21 +76,15 @@ public App() {
                 break;
                 case 5:
                     System.out.println("-------------Видать книгу-------------"); 
-                     for (int i = 0; i < histories.size(); i++) {
-                        if(histories.get(i)==null){
-                        histories.add(addHistories());
-                        keeper.saveHistories(histories);
-                        break;
-                                    }
-                    }
-                    
-                break;
+                    histories.add(addHistories());
+                    keeper.saveHistories(histories);
+                    break;
                 case 6:
                     System.out.println("-------------Список выданных книг-------------"); 
                     int n=0;
                     for (int i = 0; i < histories.size(); i++) {
                         if(histories.get(i)!=null && histories.get(i).getReturndate()== null){
-                            System.out.println(histories.get(i).toString());
+                            //System.out.println(histories.get(i).toString());
                             System.out.println("Книгу "+histories.get(i).getBook().getNameBook()+" читает "+histories.get(i).getReader().getFirstName()+" "+histories.get(i).getReader().getLastName());
                             n++;
                         }
@@ -122,8 +102,17 @@ public App() {
                     System.out.println("Номер возвращаемой книги");
                     int numberHistory =scanner.nextInt();scanner.nextLine();
                     Calendar c= new GregorianCalendar();
-                    histories.get(numberHistory -1).setReturndate(c.getTime());
-                    System.out.println("Книга "+histories.get(numberHistory-1).getBook().getNameBook()+" возвращена "+histories.get(numberHistory-1).getReader().getFirstName()+" "+histories.get(numberHistory-1).getReader().getLastName());
+                    if(histories.get(numberHistory - 1).getBook().getCount()
+                            < histories.get(numberHistory - 1).getBook().getQuantity()){
+                        histories.get(numberHistory - 1).setReturndate(c.getTime());
+                        histories.get(numberHistory - 1).getBook().setCount(histories.get(numberHistory - 1).getBook().getCount()+1);
+                    }else{
+                        System.out.println("Все экземпляры книги в библиотеке");
+                    }
+                    
+                    keeper.saveHistories(histories);
+                    keeper.saveBooks(books);
+                    System.out.printf("Книга \"%s\" возвращена%n", histories.get(numberHistory-1).getBook().getNameBook());
                     break;
                     
                 default:
@@ -131,22 +120,32 @@ public App() {
             }
      }while("r".equals(repeat));   
         }
-    private void printGivenBooks(){
-        for (int i = 0; i < histories.size(); i++) {
-            if(histories.get(i)!=null && histories.get(i).getReturndate()== null){
-                System.out.println(i+1+": Книгу "+histories.get(i).getBook().getNameBook()+" читает "+histories.get(i).getReader().getFirstName()+" "+histories.get(i).getReader().getLastName());
-                        }
+    private boolean printBooks(){
+    int booksInStock = 0;
+        for (int i = 0; i < books.size(); i++) {
+            if(books.get(i) != null && books.get(i).getCount() > 0){
+                System.out.println(i+1+". "+books.get(i).toString());
+                booksInStock++;
+            }else{
+                System.out.println(i+1+". "+"Книги: \""+books.get(i).getNameBook()+ "\" нет в наличии");
+            }
         }
+        if(booksInStock < 1){
+            System.out.println("Нет книг для чтения.");
+            return false;
+        }
+        return true;
     }
         
-        
-    
     private Book addBook(){
     Book book = new Book();
     System.out.print("Введите название книги: ");
     book.setNameBook(scanner.nextLine());
     System.out.print("Введите год издания книги: ");
     book.setPublishedYear(scanner.nextInt());
+    System.out.println("Ввидете кол-во экземпляров книги");
+    book.setQuantity(scanner.nextInt()); scanner.nextLine();
+    book.setCount(book.getQuantity());
     System.out.print("Введите кол-во авторов книги: ");
     int CountAuthors= scanner.nextInt(); scanner.nextLine();
     Author[] authors = new Author[CountAuthors];
@@ -204,12 +203,27 @@ public App() {
         history.setGivendate(c.getTime());
         return history;
     }
-
-    
-    
-    
+   private boolean printGivenBooks(){
+        int n = 0;
+        for (int i = 0; i < histories.size(); i++) {
+            if(histories.get(i) != null 
+                    && histories.get(i).getReturndate()== null 
+                    && histories.get(i).getBook().getCount() < histories.get(i).getBook().getQuantity()
+                    ){
+                System.out.printf("%d. Книгу %s читает %s %s. Выдана книга: %s%n",
+                        i+1,
+                        histories.get(i).getBook().getNameBook(),
+                        histories.get(i).getReader().getFirstName(),
+                        histories.get(i).getReader().getLastName(),
+                        histories.get(i).getGivendate().toString()
+                );
+                n++;
+            if(n < 1){
+                System.out.println("Нет выданных книг");
+                return false;
+        }
+    }
 }
-
-    
-    
-    
+        return true;
+   }
+}
